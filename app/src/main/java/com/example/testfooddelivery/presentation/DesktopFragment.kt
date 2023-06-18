@@ -10,23 +10,30 @@ import com.example.testfooddelivery.databinding.FragmentDesktopBinding
 
 class DesktopFragment : Fragment() {
 
-    private lateinit var binding: FragmentDesktopBinding
+    private var _binding: FragmentDesktopBinding? = null
+    private val binding: FragmentDesktopBinding
+        get() = _binding ?: throw RuntimeException("FragmentDesktopBinding == null")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (savedInstanceState == null) {
-            showFragment(MenuFragment())
-        }
-        binding.btnNavVew.setOnItemSelectedListener { getFragment(it.itemId) }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentDesktopBinding.inflate(inflater, container, false)
+        _binding = FragmentDesktopBinding.inflate(inflater, container, false)
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        showFragment(MenuFragment())
+        binding.btnNavVew.setOnItemSelectedListener { getFragment(it.itemId) }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 
     private fun getFragment(id: Int): Boolean {
         when (id) {
@@ -46,10 +53,11 @@ class DesktopFragment : Fragment() {
     }
 
     private fun showFragment(fragment: Fragment) {
-        parentFragmentManager
-            .beginTransaction()
-            .replace(R.id.container_fragment, fragment)
-            .commit()
+        fragmentManager
+            ?.beginTransaction()
+            ?.setReorderingAllowed(true)
+            ?.replace(R.id.container_fragment, fragment)
+            ?.commit()
     }
 
 }

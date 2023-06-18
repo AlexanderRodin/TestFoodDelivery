@@ -10,20 +10,22 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface Repository {
-    @GET("product/{id}")
+    @GET("auth/products/{id}")
     suspend fun getProductById(@Path("id") id: Int): Product
 
     @POST("auth/login")
-    suspend fun oAuth(@Body authRequest: AuthRequest): Response<User>
+    suspend fun auth(@Body authRequest: AuthRequest): Response<User>
 
     @Headers("Content-Type: application/json")
     @GET("auth/products")
     suspend fun getAllProducts(@Header("Authorization") token: String): Products
 
+//    @GET("auth/users/{id}")
+//    suspend fun getUserByToken(@Path("id") id: Int): User
+
+
     @Headers("Content-Type: application/json")
-    @GET("auth/product/search")
-    suspend fun getProductByName(
-        @Header("Authorization") token: String,
-        @Query("q") name: String
-    ): Products
+    @GET("auth/products/search")
+    suspend fun getProductsByNameAuth(@Header("Authorization") token: String,
+                                      @Query("q") name: String): Products
 }
